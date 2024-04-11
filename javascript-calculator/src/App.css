@@ -53,6 +53,26 @@ h1 {
     grid-area: zero;
 }
 
+#one {
+    grid-area: one;
+}
+
+#plus {
+    grid-area: plus;
+}
+
+#minus {
+    grid-area: minus;
+}
+
+#divide {
+    grid-area: divide;
+}
+
+#multiply {
+    grid-area: multiply;
+}
+
 .light-grey {
     background-color: var(--lightgrey);
 }
