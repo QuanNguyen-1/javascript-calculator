@@ -16,7 +16,7 @@ function App() {
         break;
       //neg/pos is pressed, if 0 do nothing, if neg turn pos, if pos turn neg, expression unaffected
       case "negative":
-        if (answer === "0"){
+        if (answer === "0" || answer === "+" || answer === "-" || answer === "*" || answer === "/"){
           break;
         } else if (answer.toString().charAt(0) === "-"){
           setAnswer(answer.slice(1));
@@ -35,33 +35,40 @@ function App() {
         if answer already includes operation or the expression is empty, do nothing
         if equal is recently pressed, set answer to operation and set the expression to the result and the operation
         if answer is already other operation, set answer to new operation and replace previous operation in expression with new one
+        if answer is negative, add parenthesis around it in the expression and add operation
         else set answer to the math operation and add the current answer and operation to expression
       */
       case "divide":
-        if (answer.includes("/")){
+        if (answer === "/"){
           break;
         } else if (equalPressed){
-          setExpression(answer.concat("/"));
+          setExpression(answer.toString() + "/");
           setAnswer("/");
           setEqualPressed(false);
         } else if (answer === "+" || answer === "-" || answer === "*" ) {
           setAnswer("/");
           setExpression((expression.slice(0,expression.length-1)).concat("/"));
+        } else if(answer.toString().charAt(0) === "-") {
+          setAnswer("/");
+          setExpression(expression.concat("(").concat(answer).concat(")").concat("/"));
         } else {
           setAnswer("/");
           setExpression(expression.concat(answer).concat("/"));
         }
         break;
       case "multiply":
-        if (answer.includes("*")){
+        if (answer === "*"){
           break;
         } else if (equalPressed){
-          setExpression(answer.concat("*"));
+          setExpression(answer.toString() + "*");
           setAnswer("*");
           setEqualPressed(false);
         } else if (answer === "+" || answer === "-" || answer === "/" ) {
           setAnswer("*");
           setExpression((expression.slice(0,expression.length-1)).concat("*"));
+        } else if(answer.toString().charAt(0) === "-") {
+          setAnswer("*");
+          setExpression(expression.concat("(").concat(answer).concat(")").concat("/"));
         } else {
           setAnswer("*");
           setExpression(expression.concat(answer).concat("*"));
@@ -71,27 +78,33 @@ function App() {
         if (answer === ("+")){
           break;
         } else if (equalPressed){
-          setExpression(answer.concat("+"));
+          setExpression(answer.toString() + "+");
           setAnswer("+");
           setEqualPressed(false);
         } else if (answer === "/" || answer === "-" || answer === "*" ) {
           setAnswer("+");
           setExpression((expression.slice(0,expression.length-1)).concat("+"));
+        } else if(answer.toString().charAt(0) === "-") {
+          setAnswer("+");
+          setExpression(expression.concat("(").concat(answer).concat(")").concat("/"));
         } else {
           setAnswer("+");
           setExpression(expression.concat(answer).concat("+"));
         }
         break;
       case "minus":
-        if (answer.includes("-")){
+        if (answer === ("-")){
           break;
         } else if (equalPressed){
-          setExpression(answer.concat("-"));
+          setExpression(answer.toString() + "-");
           setAnswer("-");
           setEqualPressed(false);
         } else if (answer === "+" || answer === "/" || answer === "*" ) {
           setAnswer("-");
           setExpression((expression.slice(0,expression.length-1)).concat("-"));
+        } else if(answer.toString().charAt(0) === "-") {
+          setAnswer("-");
+          setExpression(expression.concat("(").concat(answer).concat(")").concat("/"));
         } else {
           setAnswer("-");
           setExpression(expression.concat(answer).concat("-"));
@@ -124,6 +137,10 @@ function App() {
         if (answer === "+" || answer === "-" || answer === "*" || answer === "/"){
           setExpression((expression.slice(0,expression.length-1)).concat("="));
           setAnswer(eval(expression.slice(0,expression.length-1)));
+          setEqualPressed(true);
+        } else if(answer.toString().charAt(0) === "-") {
+          setExpression(expression.concat("(").concat(answer).concat(")").concat("="));
+          setAnswer(eval(expression.concat("(").concat(answer).concat(")")));
           setEqualPressed(true);
         } else {
           setExpression((expression.concat(answer)).concat("="));
