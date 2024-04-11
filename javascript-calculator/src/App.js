@@ -18,8 +18,11 @@ function App() {
       case "negative":
         if (answer === "0"){
           break;
+        } else if (answer.toString().charAt(0) === "-"){
+          setAnswer(answer.slice(1));
+        } else {
+          setAnswer("-".concat(answer));
         }
-        setAnswer(answer.toString().charAt(0) === "-"? answer.slice(0) : "-" + answer);
         break;
       //percentage divides answer by 100, turns into percentage, expression unaffected
       case "percentage":
