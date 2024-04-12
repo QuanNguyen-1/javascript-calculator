@@ -5,6 +5,7 @@ function App() {
   const [answer, setAnswer] = useState("0");
   const [expression, setExpression] = useState("");
   const [equalPressed, setEqualPressed] = useState(false);
+  const [isError, setError] = useState(false);
 
   const buttonPress = (key) => {
     switch(key){
@@ -13,10 +14,11 @@ function App() {
         setAnswer("0");
         setExpression("");
         setEqualPressed(false);
+        setError(false);
         break;
       //neg/pos is pressed, if 0 do nothing, if neg turn pos, if pos turn neg, expression unaffected
       case "negative":
-        if (answer === "0" || answer === "+" || answer === "-" || answer === "*" || answer === "/"){
+        if (answer === "0" || answer === "+" || answer === "-" || answer === "*" || answer === "/" || isError){
           break;
         } else if (answer.toString().charAt(0) === "-"){
           setAnswer(answer.slice(1));
@@ -26,7 +28,7 @@ function App() {
         break;
       //percentage divides answer by 100, turns into percentage, expression unaffected
       case "percentage":
-        if (answer === "0"){
+        if (answer === "0" || isError){
           break;
         }
         setAnswer((parseFloat(answer)/100).toString());
@@ -39,7 +41,7 @@ function App() {
         else set answer to the math operation and add the current answer and operation to expression
       */
       case "divide":
-        if (answer === "/"){
+        if (answer === "/" || isError){
           break;
         } else if (equalPressed){
           setExpression(answer.toString() + "/");
@@ -57,7 +59,7 @@ function App() {
         }
         break;
       case "multiply":
-        if (answer === "*"){
+        if (answer === "*" || isError){
           break;
         } else if (equalPressed){
           setExpression(answer.toString() + "*");
@@ -75,7 +77,7 @@ function App() {
         }
         break;
       case "plus":
-        if (answer === ("+")){
+        if (answer === "+" || isError){
           break;
         } else if (equalPressed){
           setExpression(answer.toString() + "+");
@@ -93,7 +95,7 @@ function App() {
         }
         break;
       case "minus":
-        if (answer === ("-")){
+        if (answer === "-" || isError){
           break;
         } else if (equalPressed){
           setExpression(answer.toString() + "-");
@@ -117,7 +119,7 @@ function App() {
       else (answer is a digit), add decimal to the answer
       */
       case "dot":
-        if (answer.includes(".")){
+        if (answer.toString().includes(".") || isError){
           break;
         } else if (answer === "+" || answer === "-" || answer === "*" || answer === "/" || answer === "0") {
           setAnswer("0.");
@@ -142,6 +144,8 @@ function App() {
           setExpression(expression.concat("(").concat(answer).concat(")").concat("="));
           setAnswer(eval(expression.concat("(").concat(answer).concat(")")));
           setEqualPressed(true);
+        } else if(isError) {
+          break;
         } else {
           setExpression((expression.concat(answer)).concat("="));
           setAnswer(eval(expression.concat(answer)));
@@ -156,10 +160,11 @@ function App() {
       case "seven":
         if(answer === "0"){
           setAnswer("7");
-        } else if (equalPressed){
+        } else if (equalPressed || isError){
           setAnswer("7");
           setExpression("");
           setEqualPressed(false);
+          setError(false);
         } else if(answer === "+" || answer === "-" || answer === "*" || answer === "/"){
           setAnswer("7");
         }else {
@@ -167,12 +172,13 @@ function App() {
         }
         break;
       case "eight":
-        if(answer === "0" || (equalPressed)){
+        if(answer === "0"){
           setAnswer("8");
-        } else if (equalPressed){
+        } else if (equalPressed || isError){
           setAnswer("8");
           setExpression("");
           setEqualPressed(false);
+          setError(false);
         } else if(answer === "+" || answer === "-" || answer === "*" || answer === "/"){
           setAnswer("8");
         } else {
@@ -180,12 +186,13 @@ function App() {
         }
         break;
       case "nine":
-        if(answer === "0" || (equalPressed)){
+        if(answer === "0"){
           setAnswer("9");
-        } else if (equalPressed){
+        } else if (equalPressed || isError){
           setAnswer("9");
           setExpression("");
           setEqualPressed(false);
+          setError(false);
         } else if(answer === "+" || answer === "-" || answer === "*" || answer === "/"){
           setAnswer("9");
         } else {
@@ -193,12 +200,13 @@ function App() {
         }
         break;
       case "four":
-        if(answer === "0" || (equalPressed)){
+        if(answer === "0"){
           setAnswer("4");
-        } else if (equalPressed){
+        } else if (equalPressed || isError){
           setAnswer("4");
           setExpression("");
           setEqualPressed(false);
+          setError(false);
         } else if(answer === "+" || answer === "-" || answer === "*" || answer === "/"){
           setAnswer("4");
         } else {
@@ -206,12 +214,13 @@ function App() {
         }
         break;
       case "five":
-        if(answer === "0" || (equalPressed)){
+        if(answer === "0"){
           setAnswer("5");
-        } else if (equalPressed){
+        } else if (equalPressed || isError){
           setAnswer("5");
           setExpression("");
           setEqualPressed(false);
+          setError(false);
         } else if(answer === "+" || answer === "-" || answer === "*" || answer === "/"){
           setAnswer("5");
         } else {
@@ -219,12 +228,13 @@ function App() {
         }
         break;
       case "six":
-        if(answer === "0" || (equalPressed)){
+        if(answer === "0"){
           setAnswer("6");
-        } else if (equalPressed){
+        } else if (equalPressed || isError){
           setAnswer("6");
           setExpression("");
           setEqualPressed(false);
+          setError(false);
         } else if(answer === "+" || answer === "-" || answer === "*" || answer === "/"){
           setAnswer("6");
         } else {
@@ -232,12 +242,13 @@ function App() {
         }
         break;
       case "one":
-        if(answer === "0" || (equalPressed)){
+        if(answer === "0"){
           setAnswer("1");
-        } else if (equalPressed){
+        } else if (equalPressed || isError){
           setAnswer("1");
           setExpression("");
           setEqualPressed(false);
+          setError(false);
         } else if(answer === "+" || answer === "-" || answer === "*" || answer === "/"){
           setAnswer("1");
         } else {
@@ -245,12 +256,13 @@ function App() {
         }
         break;
       case "two":
-        if(answer === "0" || (equalPressed)){
+        if(answer === "0"){
           setAnswer("2");
-        } else if (equalPressed){
+        } else if (equalPressed || isError){
           setAnswer("2");
           setExpression("");
           setEqualPressed(false);
+          setError(false);
         } else if(answer === "+" || answer === "-" || answer === "*" || answer === "/"){
           setAnswer("2");
         } else {
@@ -258,12 +270,13 @@ function App() {
         }
         break;
       case "three":
-        if(answer === "0" || (equalPressed)){
+        if(answer === "0"){
           setAnswer("3");
-        } else if (equalPressed){
+        } else if (equalPressed || isError){
           setAnswer("3");
           setExpression("");
           setEqualPressed(false);
+          setError(false);
         } else if(answer === "+" || answer === "-" || answer === "*" || answer === "/"){
           setAnswer("3");
         } else {
@@ -271,12 +284,13 @@ function App() {
         }
         break;
       case "zero":
-        if(answer === "0" || (equalPressed)){
+        if(answer === "0"){
           setAnswer("0");
-        } else if (equalPressed){
+        } else if (equalPressed || isError){
           setAnswer("0");
           setExpression("");
           setEqualPressed(false);
+          setError(false);
         } else if(answer === "+" || answer === "-" || answer === "*" || answer === "/"){
           setAnswer("0");
         } else {
@@ -286,6 +300,11 @@ function App() {
       default:
         setAnswer(answer);
 
+    }
+
+    if (Number(answer) > Number.MAX_VALUE || answer.toString().length > 33){
+      setAnswer("ERROR: NUMBER TOO LARGE");
+      setError(true);
     }
   }
 
