@@ -16,9 +16,13 @@ function App() {
         setEqualPressed(false);
         setError(false);
         break;
-      //neg/pos is pressed, if 0 do nothing, if neg turn pos, if pos turn neg, expression unaffected
+      /* (neg/pos)
+      if 0 or math operation or infinity, do nothing, 
+      if neg turn pos, 
+      if pos turn neg
+      */
       case "negative":
-        if (answer === "0" || answer === "+" || answer === "-" || answer === "*" || answer === "/" || isError){
+        if (answer === "0" || answer === "+" || answer === "-" || answer === "*" || answer === "/" || isError || Number(answer) > Number.MAX_VALUE){
           break;
         } else if (answer.toString().charAt(0) === "-"){
           setAnswer(answer.slice(1));
@@ -26,22 +30,26 @@ function App() {
           setAnswer("-".concat(answer));
         }
         break;
-      //percentage divides answer by 100, turns into percentage, expression unaffected
+      /* (percentage) 
+      divides answer by 100, turns into percentage,
+      if answer is 0 or error or infinity, do nothing
+      */
       case "percentage":
-        if (answer === "0" || isError){
+        if (answer === "0" || isError || Number(answer) > Number.MAX_VALUE){
           break;
         }
         setAnswer((parseFloat(answer)/100).toString());
         break;
       /* (math operations)
-        if answer already includes operation or the expression is empty, do nothing
+        if answer already includes current operation or error or answer is larger than MAX_VALUE, do nothing
         if equal is recently pressed, set answer to operation and set the expression to the result and the operation
         if answer is already other operation, set answer to new operation and replace previous operation in expression with new one
         if answer is negative, add parenthesis around it in the expression and add operation
+        if answer ends in decimal, remove decimal in answer and add to expression with operation
         else set answer to the math operation and add the current answer and operation to expression
       */
       case "divide":
-        if (answer === "/" || isError){
+        if (answer === "/" || isError || Number(answer) > Number.MAX_VALUE){
           break;
         } else if (equalPressed){
           setExpression(answer.toString() + "/");
@@ -53,13 +61,16 @@ function App() {
         } else if(answer.toString().charAt(0) === "-") {
           setAnswer("/");
           setExpression(expression.concat("(").concat(answer).concat(")").concat("/"));
+        } else if(answer.toString().charAt(answer.length-1) === ".") {
+          setAnswer("/");
+          setExpression(expression.concat(answer.slice(0,answer.length-1)).concat("/"));
         } else {
           setAnswer("/");
           setExpression(expression.concat(answer).concat("/"));
         }
         break;
       case "multiply":
-        if (answer === "*" || isError){
+        if (answer === "*" || isError || Number(answer) > Number.MAX_VALUE){
           break;
         } else if (equalPressed){
           setExpression(answer.toString() + "*");
@@ -70,14 +81,17 @@ function App() {
           setExpression((expression.slice(0,expression.length-1)).concat("*"));
         } else if(answer.toString().charAt(0) === "-") {
           setAnswer("*");
-          setExpression(expression.concat("(").concat(answer).concat(")").concat("/"));
+          setExpression(expression.concat("(").concat(answer).concat(")").concat("*"));
+        } else if(answer.toString().charAt(answer.length-1) === ".") {
+          setAnswer("*");
+          setExpression(expression.concat(answer.slice(0,answer.length-1)).concat("*"));
         } else {
           setAnswer("*");
           setExpression(expression.concat(answer).concat("*"));
         }
         break;
       case "plus":
-        if (answer === "+" || isError){
+        if (answer === "+" || isError || Number(answer) > Number.MAX_VALUE){
           break;
         } else if (equalPressed){
           setExpression(answer.toString() + "+");
@@ -88,14 +102,17 @@ function App() {
           setExpression((expression.slice(0,expression.length-1)).concat("+"));
         } else if(answer.toString().charAt(0) === "-") {
           setAnswer("+");
-          setExpression(expression.concat("(").concat(answer).concat(")").concat("/"));
+          setExpression(expression.concat("(").concat(answer).concat(")").concat("+"));
+        } else if(answer.toString().charAt(answer.length-1) === ".") {
+          setAnswer("+");
+          setExpression(expression.concat(answer.slice(0,answer.length-1)).concat("+"));
         } else {
           setAnswer("+");
           setExpression(expression.concat(answer).concat("+"));
         }
         break;
       case "minus":
-        if (answer === "-" || isError){
+        if (answer === "-" || isError || Number(answer) > Number.MAX_VALUE){
           break;
         } else if (equalPressed){
           setExpression(answer.toString() + "-");
@@ -106,7 +123,10 @@ function App() {
           setExpression((expression.slice(0,expression.length-1)).concat("-"));
         } else if(answer.toString().charAt(0) === "-") {
           setAnswer("-");
-          setExpression(expression.concat("(").concat(answer).concat(")").concat("/"));
+          setExpression(expression.concat("(").concat(answer).concat(")").concat("-"));
+        } else if(answer.toString().charAt(answer.length-1) === ".") {
+          setAnswer("-");
+          setExpression(expression.concat(answer.slice(0,answer.length-1)).concat("-"));
         } else {
           setAnswer("-");
           setExpression(expression.concat(answer).concat("-"));
@@ -133,7 +153,9 @@ function App() {
         break;
       /*(equal)
       if answer is a math operation, evaluate the current expression and remove the last operation and set equal pressed to true
-      else (answer is digit), evaluate current expression with answer added to it and set equal pressed to true
+      if answer is negative, wrap the answer in parenthesis and add to expression and evaluate it
+      if error is true or answer is larger than MAX_VALUE, do nothing
+      else (answer is positive digit), evaluate current expression with answer added to it and set equal pressed to true
       */
       case "equal":
         if (answer === "+" || answer === "-" || answer === "*" || answer === "/"){
@@ -144,7 +166,7 @@ function App() {
           setExpression(expression.concat("(").concat(answer).concat(")").concat("="));
           setAnswer(eval(expression.concat("(").concat(answer).concat(")")));
           setEqualPressed(true);
-        } else if(isError) {
+        } else if(isError || Number(answer) > Number.MAX_VALUE) {
           break;
         } else {
           setExpression((expression.concat(answer)).concat("="));
@@ -154,8 +176,9 @@ function App() {
         break;
       /* (for numbers)
       if answer is 0 set the answer to digit
-      if equal is recently pressed, set answer to digit and empty expression
-      else (if answer is digit not 0 and equal not recently pressed), add digit to answer
+      if equal is recently pressed or there is an error, set answer to digit and empty expression
+      if answer is a math operation, set the answer to digit
+      else (answer is non zero digit), add digit to answer
       */
       case "seven":
         if(answer === "0"){
@@ -302,8 +325,8 @@ function App() {
 
     }
 
-    if (Number(answer) > Number.MAX_VALUE || answer.toString().length > 33){
-      setAnswer("ERROR: NUMBER TOO LARGE");
+    if (answer.toString().length > 33){
+      setAnswer("ERROR: NUMBER TOO LARGE FOR DISPLAY");
       setError(true);
     }
   }
